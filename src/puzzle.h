@@ -3,17 +3,18 @@
 
 #include <array>
 #include <vector>
-#include <utility>
+
+using namespace std;
 
 class SlidingPuzzle {
 public:
-    std::array<int, 4> state;  // 2x2 puzzle stored as a 1D array
+    array<int, 4> state;
 
-    SlidingPuzzle(std::array<int, 4> initial_state);
+    SlidingPuzzle(array<int, 4> initial_state);
     int find_zero();
-    std::vector<std::pair<int, int>> get_valid_moves();
-    std::array<int, 4> apply_move(std::pair<int, int> move);
-    std::vector<std::array<int, 4>> get_next_states();
+    vector<pair<int, int>> get_valid_moves();
+    array<int, 4> apply_move(pair<int, int> move);
+    vector<array<int, 4>> get_next_states();
     bool is_goal();
 };
 
