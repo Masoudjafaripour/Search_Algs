@@ -1,9 +1,6 @@
-import numpy as np
+from puzzle import SlidingPuzzle
 
-# Graph representation
-graph = {
-    
-}
-# BFS algorithm
-def BFS(graph, start):
+def bfs(initial_state: tuple) -> list:
+    """Perform a breadth-first search to find the goal state."""
+
     pass
