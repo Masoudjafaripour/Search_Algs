@@ -12,6 +12,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # add_executable(dfs src/dfs.cpp src/puzzle.cpp)
 # add_executable(grid_search src/bfs_dfs_grid.cpp)
 
-add_executable(Rank src/Rank.cpp)
+# add_executable(Rank src/Rank.cpp)
+add_executable(FM src/cpp/fastmap.cpp)
 
 # Link libraries (if necessary)
