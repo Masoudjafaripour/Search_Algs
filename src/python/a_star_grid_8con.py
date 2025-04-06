@@ -39,36 +39,18 @@ def get_neighbors_8(current, grid_size, obstacles):
         if (nr, nc) in obstacles:
             continue
         
-        # Corner-cutting check for diagonals:
-        if abs(dx) == 1 and abs(dy) == 1:
-            # e.g. if moving SE from (r,c)->(r+1,c+1),
-            # check that (r+1,c) and (r,c+1) are NOT obstacles.
-            # We'll see which squares are "blocking corners":
-            r_side = r + dx    # vertical neighbor
-            c_side = c         # same column
-            r_up = r
-            c_up = c + dy      # horizontal neighbor
-
-            if (r_side, c_side) in obstacles and (r_up, c_up) in obstacles:
-                # Both side-adjacent squares are blocked => corner cut
-                continue
-
-        if abs(dx) == 1 and abs(dy) == 1:
-            # We're moving diagonally from (r,c) -> (r+dx,c+dy).
-            # Suppose we're moving SE => dx=1, dy=1
-            # The two "side" squares are (r+dx, c) and (r, c+dy).
-            # If BOTH are obstacles, skip (r+dx, c+dy).
-            r_side = r + dx
-            c_side = c      # same col, new row
-            r_up   = r
-            c_up   = c + dy # same row, new col
-
-            if (r_side, c_side) in obstacles and (r_up, c_up) in obstacles:
-                continue  # corner is blocked => skip
-
-        
         neighbors.append((nr, nc))
-    
+    # print("neighbors = ", neighbors)
+
+    for dx, dy in deltas[4:]:  # Diagonal moves
+        nr, nc = r + dx, c + dy
+        # Check if diagonal move is valid (not cutting corners)
+        if (nr, c) in obstacles or (r, nc) in obstacles:
+            # print(f"Removing corner-cutting neighbor: {(nr, nc)}")
+            if (nr, nc) in neighbors:
+                neighbors.remove((nr, nc))
+
+    # print("final neighbors = ", neighbors)
     return neighbors
 
 def move_cost(current, neighbor):
@@ -95,10 +77,10 @@ def generate_random_obstacles(grid_size, num_obstacles, start, goal):
     return obstacles
 
 # Example usage
-grid_size = (10, 10)
-num_obstacles = 20
+grid_size = (20, 20)
+num_obstacles = grid_size[0]*3  # Adjust the number of obstacles as needed
 start = (0, 0)
-goal = (9, 9)
+goal = (grid_size[0]-1, grid_size[0]-1)
 obstacles = generate_random_obstacles(grid_size, num_obstacles, start, goal)
 
 def a_star(start, goal):
@@ -196,5 +178,3 @@ def visualize(grid_size, obstacles, path, start, goal):
 path = a_star(start, goal)
 print(path)
 visualize(grid_size, obstacles, path, start, goal)
-
-
