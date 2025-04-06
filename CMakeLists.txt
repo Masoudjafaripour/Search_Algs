@@ -13,6 +13,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # add_executable(grid_search src/bfs_dfs_grid.cpp)
 
 # add_executable(Rank src/Rank.cpp)
-add_executable(FM src/cpp/fastmap.cpp)
+# add_executable(FM src/cpp/fastmap.cpp)
+add_executable(A_star src/cpp/a_star_grid_8_con.cpp)
 
 # Link libraries (if necessary)

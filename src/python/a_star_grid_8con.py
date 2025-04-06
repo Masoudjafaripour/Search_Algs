@@ -40,17 +40,14 @@ def get_neighbors_8(current, grid_size, obstacles):
             continue
         
         neighbors.append((nr, nc))
-    # print("neighbors = ", neighbors)
 
     for dx, dy in deltas[4:]:  # Diagonal moves
         nr, nc = r + dx, c + dy
         # Check if diagonal move is valid (not cutting corners)
         if (nr, c) in obstacles or (r, nc) in obstacles:
-            # print(f"Removing corner-cutting neighbor: {(nr, nc)}")
             if (nr, nc) in neighbors:
                 neighbors.remove((nr, nc))
 
-    # print("final neighbors = ", neighbors)
     return neighbors
 
 def move_cost(current, neighbor):
