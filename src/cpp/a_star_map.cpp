@@ -206,11 +206,34 @@ vector<Scenario> read_scenarios(const string& filename) {
     return scenarios;
 }
 
+void print_map_region(const vector<string>& grid, pii center, int radius = 5) {
+    int r0 = max(0, center.first - radius);
+    int r1 = min((int)grid.size(), center.first + radius + 1);
+    int c0 = max(0, center.second - radius);
+    int c1 = min((int)grid[0].size(), center.second + radius + 1);
+
+    for (int r = r0; r < r1; ++r) {
+        for (int c = c0; c < c1; ++c) {
+            if (pii{r, c} == center)
+                cout << 'S';  // Mark center
+            else
+                cout << grid[r][c];
+        }
+        cout << '\n';
+    }
+}
+
+bool is_valid(const pii& p, int rows, int cols, const unordered_set<pii, pair_hash>& obstacles) {
+    return is_in_bounds(p.first, p.second, rows, cols) && !obstacles.count(p);
+}
 
 
 int main() {
-    string map_file = "rmtst01.map";
-    string scen_file = "rmtst01.map.scen";
+    // string map_file = "rmtst01.map";
+    // string scen_file = "rmtst01.map.scen";
+
+    string map_file = "AcrosstheCape.map";
+    string scen_file = "AcrosstheCape.map.scen";
 
     unordered_set<pii, pair_hash> obstacles;
     int rows, cols;
@@ -219,18 +242,60 @@ int main() {
 
     vector<Scenario> scenarios = read_scenarios(scen_file);
 
-    for (int i = 0; i < min(500, (int)scenarios.size()); ++i) {
+    int max_scenarios = min(500, (int)scenarios.size());
+    int solved_count = 0;
+    int total_path_length = 0;
+    vector<int> failed_indices;
+
+    for (int i = 0; i < max_scenarios; ++i) {
         const auto& s = scenarios[i];
-        cout << "Solving scenario " << i << ": start (" << s.start.first << "," << s.start.second
-             << ") → goal (" << s.goal.first << "," << s.goal.second << ")\n";
+
+        // Optional: Skip scenarios where start or goal is inside an obstacle
+        if (obstacles.count(s.start) || obstacles.count(s.goal)) {
+            failed_indices.push_back(i);
+            continue;
+        }
+
+        if (obstacles.count(s.start)) cout << "  Start is inside an obstacle!\n";
+        if (obstacles.count(s.goal)) cout << "  Goal is inside an obstacle!\n";
+
+        if (!is_valid(s.start, rows, cols, obstacles) || !is_valid(s.goal, rows, cols, obstacles)) {
+            cout << "  ⚠️ Scenario " << i << " is invalid (start/goal out of bounds or in obstacle).\n";
+            failed_indices.push_back(i);
+            continue;
+        }
 
         vector<pii> path = a_star(s.start, s.goal, grid_size, obstacles);
 
         if (!path.empty()) {
-            cout << "  Path found with " << path.size() << " steps.\n";
+            solved_count++;
+            total_path_length += path.size();
         } else {
-            cout << "  No path found.\n";
+            failed_indices.push_back(i);
         }
+    }
+
+    // Print summary
+    cout << "\n=== Summary ===\n";
+    cout << "Total scenarios attempted: " << max_scenarios << "\n";
+    cout << "Solved: " << solved_count << "\n";
+    cout << "Failed: " << failed_indices.size() << "\n";
+
+    if (solved_count > 0)
+        cout << "Average path length (of solved): " << (float)total_path_length / solved_count << "\n";
+    else
+        cout << "Average path length: N/A\n";
+
+    if (!failed_indices.empty()) {
+        cout << "\nFailed scenarios:\n";
+        for (int idx : failed_indices) {
+            const auto& s = scenarios[idx];
+            cout << "  Scenario " << idx << ": Start (" << s.start.first << "," << s.start.second
+                 << ") → Goal (" << s.goal.first << "," << s.goal.second << ")\n";
+                //  print_map_region(grid, s.start);
+                //  print_map_region(grid, s.goal);
+        }
+        
     }
 
     return 0;
