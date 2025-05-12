@@ -1,6 +1,6 @@
 # Search Algorithms
 
-This project contains implementations of various search algorithms, ranging from easy to hard. The primary focus is on solving the Sliding Puzzle problem using different search techniques.
+This project contains implementations of various search algorithms, ranging from easy to hard. The primary focus is on solving the Sliding Puzzle and Path Finding problems using different search techniques.
 
 ## Project Structure
 
